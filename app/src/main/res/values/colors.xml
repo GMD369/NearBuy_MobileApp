@@ -2,4 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Marketplace Theme Colors -->
+    <color name="md_theme_primary">#006495</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#CCE5FF</color>
+    <color name="md_theme_onPrimaryContainer">#001E31</color>
+
+    <color name="md_theme_secondary">#50606E</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+
+    <color name="md_theme_tertiary">#65587B</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#ECDCFF</color>
+    <color name="md_theme_onTertiaryContainer">#211634</color>
 </resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.nearbuy.app.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_detail"
+            app:destination="@id/nav_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_detail"
+        android:name="com.nearbuy.app.ui.detail.DetailFragment"
+        android:label="Product Detail"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="listingId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_browse"
+        android:name="com.nearbuy.app.ui.browse.BrowseFragment"
+        android:label="Browse"
+        tools:layout="@layout/fragment_browse">
+        <action
+            android:id="@+id/action_nav_browse_to_nav_detail"
+            app:destination="@id/nav_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_post"
+        android:name="com.nearbuy.app.ui.post.PostFragment"
+        android:label="Post"
+        tools:layout="@layout/fragment_post" />
+
+    <fragment
+        android:id="@+id/nav_swap"
+        android:name="com.nearbuy.app.ui.swap.SwapFragment"
+        android:label="Swap"
+        tools:layout="@layout/fragment_swap" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.nearbuy.app.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.nearbuy.app.ui.auth.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login" />
+
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.nearbuy.app.ui.auth.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/fragment_register" />
+
+</navigation>
