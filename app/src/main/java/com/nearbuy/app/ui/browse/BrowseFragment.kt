@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nearbuy.app.NearBuyApplication
@@ -39,24 +38,20 @@ class BrowseFragment : Fragment() {
         loadListings()
 
         binding.btnFilter.setOnClickListener {
-            // Toggle swap-only filter
-            val swapOnly = binding.btnFilter.text == getString(android.R.string.ok)
-            if (!swapOnly) {
-                val swapListings = allListings.filter { it.isSwapAllowed }
-                showListings(swapListings)
-                binding.btnFilter.text = getString(R.string.label_all)
-                binding.layoutActiveFilters.isVisible = true
-            } else {
-                showListings(allListings)
-                binding.btnFilter.text = getString(R.string.label_filter)
-                binding.layoutActiveFilters.isVisible = false
-            }
+            FilterBottomSheet { min, max, category, condition, _ ->
+                var results = allListings
+                if (min != Double.MIN_VALUE) results = results.filter { it.price >= min }
+                if (max != Double.MAX_VALUE) results = results.filter { it.price <= max }
+                category?.let { cat -> results = results.filter { it.category.equals(cat, ignoreCase = true) } }
+                condition?.let { cond -> results = results.filter { it.condition.equals(cond, ignoreCase = true) } }
+                showListings(results)
+                binding.layoutActiveFilters.isVisible = results.size != allListings.size
+            }.show(childFragmentManager, FilterBottomSheet.TAG)
         }
 
         binding.btnClearFilters.setOnClickListener {
             showListings(allListings)
             binding.layoutActiveFilters.isVisible = false
-            binding.btnFilter.text = getString(R.string.label_filter)
         }
 
         binding.btnResetFiltersEmpty.setOnClickListener {
@@ -120,7 +115,7 @@ class BrowseFragment : Fragment() {
         listingAdapter.submitList(listings)
         binding.rvBrowseListings.isVisible = listings.isNotEmpty()
         binding.layoutEmpty.isVisible      = listings.isEmpty()
-        binding.tvResultCount.text         = "${listings.size} items found"
+        binding.tvResultCount.text         = getString(R.string.label_items_found, listings.size)
     }
 
     override fun onResume() { super.onResume(); loadListings() }

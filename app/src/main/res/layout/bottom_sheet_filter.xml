@@ -275,20 +275,45 @@
 
     </com.google.android.material.chip.ChipGroup>
 
-    <!-- Apply button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnApplyFilters"
+    <!-- Buttons row -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:text="Apply Filters"
-        android:textSize="15sp"
-        android:textColor="#FFFFFF"
-        android:textAllCaps="false"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.02"
-        app:backgroundTint="#FF6600"
-        app:cornerRadius="14dp"
-        app:elevation="0dp"
-        app:rippleColor="#22000000" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRemoveFilters"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Remove Filters"
+            android:textSize="13sp"
+            android:textColor="#FF6600"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            app:strokeColor="#FF6600"
+            app:strokeWidth="1.5dp"
+            app:cornerRadius="14dp"
+            app:rippleColor="#11FF6600" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApplyFilters"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:text="Apply"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            app:backgroundTint="#FF6600"
+            app:cornerRadius="14dp"
+            app:elevation="0dp"
+            app:rippleColor="#22000000" />
+
+    </LinearLayout>
 
 </LinearLayout>

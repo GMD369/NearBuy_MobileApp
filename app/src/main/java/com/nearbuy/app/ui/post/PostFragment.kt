@@ -58,7 +58,7 @@ class PostFragment : Fragment() {
 
         if (!authViewModel.isLoggedIn()) {
             Toast.makeText(requireContext(), "Please login to post a listing", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.nav_login)
+            view.post { findNavController().navigate(R.id.action_nav_post_to_nav_login) }
             return
         }
 
@@ -122,7 +122,7 @@ class PostFragment : Fragment() {
 
         app.listingRepository.addListing(listing)
         Toast.makeText(requireContext(), "Listing posted successfully!", Toast.LENGTH_LONG).show()
-        findNavController().navigate(R.id.nav_home)
+        view?.post { findNavController().navigate(R.id.action_nav_post_to_nav_home) }
     }
 
     override fun onDestroyView() {

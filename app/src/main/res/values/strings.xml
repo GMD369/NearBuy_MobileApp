@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">NearBuy</string>
     <string name="label_filter">Filter</string>
+    <string name="label_items_found">%d items found</string>
     <string name="label_all">All</string>
     <string name="label_rating">4.5</string>
     <string name="label_price_rs">Price: Rs. %d</string>

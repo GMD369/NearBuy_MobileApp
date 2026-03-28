@@ -9,15 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray" />
+        android:background="@drawable/bg_image_thumb" />
 
     <ImageButton
         android:id="@+id/btnRemove"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_gravity="top|end"
-        android:background="@android:color/black"
-        android:src="@android:drawable/ic_delete"
-        android:alpha="0.7" />
+        android:layout_margin="4dp"
+        android:src="@drawable/ic_remove_circle"
+        android:background="@android:color/transparent"
+        android:contentDescription="Remove image" />
 
 </FrameLayout>

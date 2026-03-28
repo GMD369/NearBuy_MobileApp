@@ -4,70 +4,113 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#F8F9FF"
     android:padding="24dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Photos"
-        android:textAppearance="?attr/textAppearanceHeadlineMedium"
-        android:layout_marginBottom="8dp" />
+        android:textSize="22sp"
+        android:textColor="#0D0D0D"
+        android:fontFamily="sans-serif-black"
+        android:letterSpacing="-0.02"
+        android:layout_marginTop="48dp" />
 
     <TextView
-        android:id="@+id/tvImageCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0 / 5 photos selected"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textColor="?attr/colorOutline"
-        android:layout_marginBottom="24dp" />
+        android:text="Add up to 5 clear photos to attract more buyers"
+        android:textSize="13sp"
+        android:textColor="#AAAAAA"
+        android:fontFamily="sans-serif"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="28dp" />
 
-    <!-- Thumbnails of selected images -->
+    <!-- Selected images preview -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSelectedImages"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone" />
 
-    <!-- Upload card -->
+    <!-- Upload tap area -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnUploadImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="?attr/colorSurfaceVariant"
-        app:strokeColor="?attr/colorOutline"
-        app:strokeWidth="1dp">
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:strokeColor="#FFCCAA"
+        app:strokeWidth="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="32dp">
+            android:padding="40dp">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@android:drawable/ic_menu_camera"
-                app:tint="?attr/colorOnSurfaceVariant" />
+            <!-- Orange circle background behind icon -->
+            <FrameLayout
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/bg_upload_icon">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_camera"
+                    app:tint="#FF6600" />
+
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="Tap to add photos"
-                android:textAppearance="?attr/textAppearanceLabelLarge" />
+                android:textSize="15sp"
+                android:textColor="#0D0D0D"
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Up to 5 images"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:alpha="0.6" />
+                android:text="Up to 5 images · JPG or PNG"
+                android:textSize="12sp"
+                android:textColor="#AAAAAA"
+                android:fontFamily="sans-serif" />
+
         </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- Photo count indicator -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/tvImageCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0 / 5 photos selected"
+            android:textSize="13sp"
+            android:textColor="#AAAAAA"
+            android:fontFamily="sans-serif" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

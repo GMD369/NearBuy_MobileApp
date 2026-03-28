@@ -21,7 +21,8 @@
         <activity
             android:name="com.nearbuy.app.ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.NearBuy.Splash">
+            android:theme="@style/Theme.NearBuy.Splash"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

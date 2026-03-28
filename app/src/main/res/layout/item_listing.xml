@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://tools.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
-    app:strokeWidth="0dp"
-    app:cardBackgroundColor="?attr/colorSurface"
-    android:stateListAnimator="@animator/card_click_animator"
-    android:clickable="true"
-    android:focusable="true">
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <!-- Listing Image -->
+        <ImageView
             android:id="@+id/ivListingImage"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
             android:transitionName="listing_image_transition"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
             tools:srcCompat="@tools:sample/backgrounds/scenery" />
 
+        <!-- Top-right badges -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:orientation="vertical"
+            android:gravity="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -41,113 +43,122 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SWAP"
-                android:textColor="?attr/colorOnTertiaryContainer"
+                android:textColor="#FFFFFF"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                app:chipBackgroundColor="?attr/colorTertiaryContainer"
-                app:chipMinHeight="20dp"
+                app:chipBackgroundColor="#FF6600"
+                app:chipMinHeight="22dp"
                 app:chipStrokeWidth="0dp"
-                app:chipIcon="@android:drawable/ic_popup_sync"
-                app:chipIconSize="12dp"
-                app:chipIconTint="?attr/colorOnTertiaryContainer" />
+                android:visibility="gone" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipDealBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Great Deal"
-                android:textColor="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 app:chipBackgroundColor="#4CAF50"
-                app:chipMinHeight="20dp"
-                app:chipStrokeWidth="0dp" />
+                app:chipMinHeight="22dp"
+                app:chipStrokeWidth="0dp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnFavorite"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="6dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="Save listing"
-            android:src="@drawable/ic_bookmark_off"
-            app:tint="?attr/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/ivListingImage" />
-
+        <!-- NEW badge bottom-left -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipNewBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="NEW"
-            android:textColor="?attr/colorOnPrimary"
+            android:textColor="#FFFFFF"
             android:textSize="10sp"
             android:textStyle="bold"
-            app:chipBackgroundColor="?attr/colorPrimary"
-            app:chipMinHeight="20dp"
+            app:chipBackgroundColor="#FF6600"
+            app:chipMinHeight="22dp"
             app:chipStrokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/ivListingImage"
             android:visibility="gone" />
 
+        <!-- Favorite button bottom-right -->
+        <ImageButton
+            android:id="@+id/btnFavorite"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_margin="6dp"
+            android:background="@drawable/bg_favorite_btn"
+            android:contentDescription="Save listing"
+            android:src="@drawable/ic_bookmark_off"
+            android:padding="6dp"
+            app:tint="#FF6600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/ivListingImage" />
+
+        <!-- Price -->
         <TextView
             android:id="@+id/tvListingPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/colorPrimary"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp"
+            android:textColor="#FF6600"
             android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivListingImage"
             tools:text="Rs. 120,000" />
 
+        <!-- Seller rating -->
         <TextView
             android:id="@+id/tvSellerRatingOnCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:drawablePadding="2dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
-            android:textColor="?attr/colorSecondary"
-            app:drawableStartCompat="@android:drawable/btn_star_big_on"
-            app:drawableTint="?attr/colorSecondary"
-            app:layout_constraintBottom_toBottomOf="@id/tvListingPrice"
+            android:gravity="center_vertical"
+            android:textSize="11sp"
+            android:textColor="#999999"
+            android:fontFamily="sans-serif"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvListingPrice"
+            app:layout_constraintBottom_toBottomOf="@id/tvListingPrice"
             tools:text="4.8" />
 
+        <!-- Title -->
         <TextView
             android:id="@+id/tvListingTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurface"
+            android:textSize="13sp"
+            android:textColor="#0D0D0D"
+            android:fontFamily="sans-serif"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvListingPrice"
             tools:text="iPhone 12 PTA Approved - 128GB" />
 
+        <!-- Location -->
         <TextView
             android:id="@+id/tvListingLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="5dp"
             android:drawablePadding="4dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
-            android:textColor="?attr/colorOutline"
-            app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
-            app:drawableTint="?attr/colorOutline"
+            android:gravity="center_vertical"
+            android:textSize="11sp"
+            android:textColor="#AAAAAA"
+            android:fontFamily="sans-serif"
+            app:drawableStartCompat="@drawable/ic_location_pin"
+            app:drawableTint="#AAAAAA"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvListingTitle"
             tools:text="Karachi" />
