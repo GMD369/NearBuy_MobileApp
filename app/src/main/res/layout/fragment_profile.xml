@@ -1,122 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.profile.ProfileFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#F8F9FF"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorSurface">
+            android:background="#F8F9FF"
+            android:fitsSystemWindows="true"
+            app:elevation="0dp">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
+            <!-- Top bar -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@android:drawable/ic_menu_sort_by_size"
-                app:title="My Profile" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="16dp">
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My"
+                        android:textSize="26sp"
+                        android:textColor="#0D0D0D"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="-0.02" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" Profile"
+                        android:textSize="26sp"
+                        android:textColor="#FF6600"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="-0.02" />
+
+                </LinearLayout>
+
+                <!-- Drawer menu icon -->
+                <ImageButton
+                    android:id="@+id/btnOpenDrawer"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_save_btn"
+                    android:src="@drawable/ic_filter"
+                    android:padding="8dp"
+                    android:contentDescription="Menu"
+                    app:tint="#FF6600" />
+
+            </LinearLayout>
+
+            <!-- Profile header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp"
+                android:paddingHorizontal="24dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivProfileImage"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="2dp"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                    app:strokeColor="?attr/colorPrimary"
-                    app:strokeWidth="2dp"
-                    tools:src="@tools:sample/avatars" />
+                <!-- Avatar with orange ring -->
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
+                    <ImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:background="@drawable/bg_avatar_ring"
+                        android:padding="3dp" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivProfileImage"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                        tools:src="@tools:sample/avatars" />
+
+                </FrameLayout>
+
+                <!-- Name -->
                 <TextView
                     android:id="@+id/tvUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                    android:textStyle="bold"
+                    android:layout_marginTop="14dp"
+                    android:textSize="20sp"
+                    android:textColor="#0D0D0D"
+                    android:fontFamily="sans-serif-black"
+                    android:letterSpacing="-0.01"
                     tools:text="Ali Ahmed" />
 
-                <RatingBar
-                    android:id="@+id/userRating"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
+                <!-- Stats row -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:numStars="5"
-                    android:rating="4.5"
-                    android:progressTint="#FFD700" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="6dp">
 
-                <TextView
-                    android:id="@+id/tvUserStats"
+                    <TextView
+                        android:id="@+id/tvUserStats"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#AAAAAA"
+                        android:fontFamily="sans-serif"
+                        tools:text="15 Listings" />
+
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="4dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:background="@drawable/bg_dot_inactive" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#FF6600"
+                        android:fontFamily="sans-serif-medium"
+                        tools:text="4.8 ★" />
+
+                </LinearLayout>
+
+                <!-- Location -->
+                <LinearLayout
+                    android:id="@+id/layoutLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="?attr/colorOutline"
-                    tools:text="15 Listings • 4.8 Rating" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/tvUserLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:drawablePadding="4dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:visibility="gone"
-                    tools:text="📍 Karachi" />
+                    <ImageView
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:src="@drawable/ic_location_pin"
+                        app:tint="#AAAAAA" />
 
-                <TextView
-                    android:id="@+id/tvUserPhone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:visibility="gone"
-                    tools:text="📞 03001234567" />
+                    <TextView
+                        android:id="@+id/tvUserLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textSize="13sp"
+                        android:textColor="#AAAAAA"
+                        android:fontFamily="sans-serif"
+                        tools:text="Karachi" />
 
+                </LinearLayout>
+
+                <!-- Bio -->
                 <TextView
                     android:id="@+id/tvUserBio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="13sp"
+                    android:textColor="#888888"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="3dp"
                     android:visibility="gone"
                     tools:text="Buying and selling since 2020" />
 
             </LinearLayout>
 
+            <!-- Tabs -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                app:tabTextColor="#AAAAAA"
+                app:tabSelectedTextColor="#FF6600"
+                app:tabIndicatorColor="#FF6600"
+                app:tabIndicatorHeight="3dp"
+                app:tabRippleColor="#11FF6600"
+                app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium">
+
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="My Listings" />
+
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Saved Items" />
+
             </com.google.android.material.tabs.TabLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <!-- Guest state -->
         <LinearLayout
             android:id="@+id/layoutGuest"
             android:layout_width="match_parent"
@@ -127,27 +236,59 @@
             android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_nav_profile"
+                android:alpha="0.15"
+                android:layout_marginBottom="16dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_guest_profile"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:text="You're browsing as a guest"
+                android:textSize="17sp"
+                android:textColor="#0D0D0D"
+                android:fontFamily="sans-serif-medium" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Sign in to view your profile and listings"
+                android:textSize="13sp"
+                android:textColor="#AAAAAA"
+                android:fontFamily="sans-serif"
+                android:gravity="center" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGuestSignIn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/label_sign_in" />
+                android:layout_height="52dp"
+                android:layout_marginTop="24dp"
+                android:text="Sign In"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false"
+                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="32dp"
+                app:backgroundTint="#FF6600"
+                app:cornerRadius="14dp"
+                app:elevation="0dp"
+                app:rippleColor="#22000000" />
 
         </LinearLayout>
 
+        <!-- Listings grid -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvUserListings"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="80dp"
+            android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/item_listing"
@@ -155,11 +296,15 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <!-- Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#FFFFFF"
+        app:itemTextColor="#0D0D0D"
+        app:itemIconTint="#FF6600"
         app:menu="@menu/profile_drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

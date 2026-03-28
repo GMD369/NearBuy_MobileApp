@@ -52,6 +52,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginTop="24dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -74,16 +75,6 @@
 
                     </LinearLayout>
 
-                    <!-- Notification bell -->
-                    <ImageView
-                        android:id="@+id/ivNotification"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_notification"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        app:tint="#555555"
-                        android:contentDescription="Notifications" />
 
                 </LinearLayout>
 

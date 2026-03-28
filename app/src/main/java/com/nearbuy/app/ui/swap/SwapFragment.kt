@@ -30,7 +30,15 @@ class SwapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (!authViewModel.isLoggedIn()) {
-            findNavController().navigate(R.id.nav_login)
+            binding.layoutGuestSwap.root.visibility = View.VISIBLE
+            binding.swapTabs.visibility = View.GONE
+            binding.rvSwapProposals.visibility = View.GONE
+            binding.layoutGuestSwap.btnGuestSwapLogin.setOnClickListener {
+                findNavController().navigate(R.id.nav_login)
+            }
+            binding.layoutGuestSwap.btnGuestSwapHome.setOnClickListener {
+                findNavController().navigate(R.id.nav_home)
+            }
             return
         }
 

@@ -65,7 +65,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupDrawer() {
-        binding.toolbar.setNavigationOnClickListener {
+        binding.btnOpenDrawer.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
 
@@ -98,10 +98,6 @@ class ProfileFragment : Fragment() {
                 binding.tvUserLocation.visibility = View.VISIBLE
             } else binding.tvUserLocation.visibility = View.GONE
 
-            if (user.phone.isNotBlank()) {
-                binding.tvUserPhone.text = getString(R.string.label_phone, user.phone)
-                binding.tvUserPhone.visibility = View.VISIBLE
-            } else binding.tvUserPhone.visibility = View.GONE
 
             if (user.bio.isNotBlank()) {
                 binding.tvUserBio.text = user.bio

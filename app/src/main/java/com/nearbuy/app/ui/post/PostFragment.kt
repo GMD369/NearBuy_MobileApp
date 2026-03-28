@@ -57,8 +57,16 @@ class PostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (!authViewModel.isLoggedIn()) {
-            Toast.makeText(requireContext(), "Please login to post a listing", Toast.LENGTH_SHORT).show()
-            view.post { findNavController().navigate(R.id.action_nav_post_to_nav_login) }
+            binding.layoutGuestPost.root.visibility = View.VISIBLE
+            binding.postProgress.visibility = View.GONE
+            binding.postViewPager.visibility = View.GONE
+            binding.bottomButtons.visibility = View.GONE
+            binding.layoutGuestPost.btnGuestPostLogin.setOnClickListener {
+                findNavController().navigate(R.id.action_nav_post_to_nav_login)
+            }
+            binding.layoutGuestPost.btnGuestPostHome.setOnClickListener {
+                findNavController().navigate(R.id.nav_home)
+            }
             return
         }
 

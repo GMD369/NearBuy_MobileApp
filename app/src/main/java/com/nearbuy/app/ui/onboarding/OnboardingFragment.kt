@@ -34,12 +34,6 @@ class OnboardingFragment : Fragment() {
         // Handle system bars — status bar top, nav bar bottom
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.btnSkip.setPadding(
-                binding.btnSkip.paddingLeft,
-                systemBars.top + 16,
-                binding.btnSkip.paddingRight,
-                binding.btnSkip.paddingBottom
-            )
             binding.bottomBar.setPadding(
                 28.dpToPx(),
                 0,
@@ -80,10 +74,6 @@ class OnboardingFragment : Fragment() {
             } else {
                 completeOnboarding()
             }
-        }
-
-        binding.btnSkip.setOnClickListener {
-            completeOnboarding()
         }
 
         binding.onboardingViewPager.registerOnPageChangeCallback(object :
