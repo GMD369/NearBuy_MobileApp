@@ -186,6 +186,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnViewSellerProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="View Profile"
@@ -235,11 +236,11 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabFavorite"
+        android:id="@+id/fabSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/bottomAppBar"
-        app:srcCompat="@android:drawable/btn_star_big_off"
-        android:contentDescription="Add to favorites" />
+        app:srcCompat="@drawable/ic_bookmark_off"
+        android:contentDescription="Save listing" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

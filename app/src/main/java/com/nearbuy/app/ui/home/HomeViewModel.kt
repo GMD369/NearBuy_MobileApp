@@ -1,97 +1,48 @@
 package com.nearbuy.app.ui.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.data.model.Listing
 import com.nearbuy.app.data.repository.ListingRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ListingRepository()
+    private val repo = (application as NearBuyApplication).listingRepository
 
     private val _listings = MutableLiveData<List<Listing>>()
-    val listings: LiveData<List<Listing>> get() = _listings
+    val listings: LiveData<List<Listing>> = _listings
 
     private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> get() = _error
+    private var currentCategory = "All"
+    private var currentQuery    = ""
 
-    private val _refreshSuccess = MutableLiveData<Boolean>()
-    val refreshSuccess: LiveData<Boolean> get() = _refreshSuccess
+    init { loadListings() }
 
-    private var fullListCache: List<Listing> = emptyList()
-    private var currentFilter: String = "All"
-    private var currentQuery: String = ""
-
-    init {
-        loadListings()
-    }
-
-    fun loadListings(isRefreshing: Boolean = false) {
-        viewModelScope.launch {
-            if (!isRefreshing) _isLoading.value = true
-            _error.value = null
-            
-            try {
-                // Simulate network call
-                val result = withContext(Dispatchers.IO) {
-                    repository.getAllListings()
-                }
-                fullListCache = result
-                applyFilters()
-                
-                if (isRefreshing) {
-                    _refreshSuccess.value = true
-                }
-            } catch (e: Exception) {
-                _error.value = e.message ?: "An unknown error occurred"
-            } finally {
-                _isLoading.value = false
-            }
+    fun loadListings() {
+        _isLoading.value = true
+        val result = when {
+            currentQuery.isNotBlank() -> repo.searchListings(currentQuery)
+            else                      -> repo.getListingsByCategory(currentCategory)
         }
+        _listings.value  = result
+        _isLoading.value = false
     }
 
-    fun filterByCategory(categoryName: String) {
-        if (currentFilter == categoryName) return
-        currentFilter = categoryName
-        applyFilters()
+    fun filterByCategory(category: String) {
+        currentCategory = category
+        currentQuery    = ""
+        loadListings()
     }
 
     fun search(query: String) {
         currentQuery = query
-        applyFilters()
+        loadListings()
     }
 
-    private fun applyFilters() {
-        viewModelScope.launch(Dispatchers.Default) {
-            var filtered = if (currentFilter == "All") {
-                fullListCache
-            } else {
-                fullListCache.filter { it.category == currentFilter }
-            }
-
-            if (currentQuery.isNotBlank()) {
-                filtered = filtered.filter { 
-                    it.title.contains(currentQuery, ignoreCase = true) ||
-                    it.description.contains(currentQuery, ignoreCase = true)
-                }
-            }
-
-            withContext(Dispatchers.Main) {
-                _listings.value = filtered
-            }
-        }
-    }
-    
-    fun onRefreshHandled() {
-        _refreshSuccess.value = false
-    }
+    fun getCategories(): List<String> = ListingRepository.CATEGORIES
 }

@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">NearBuy</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_all">All</string>
+    <string name="label_rating">4.5</string>
+    <string name="label_price_rs">Price: Rs. %d</string>
+    <string name="label_image_count">%1$d / 5 photos selected</string>
+    <string name="label_user_stats">%1$d Listings • %2$s Rating</string>
+    <string name="label_location">📍 %s</string>
+    <string name="label_phone">📞 %s</string>
+    <string name="label_sign_in">Sign In</string>
+    <string name="label_sign_up">Sign Up</string>
+    <string name="label_go_to_sign_up">Don\'t have an account? Sign Up</string>
+    <string name="label_go_to_sign_in">Already have an account? Sign In</string>
+    <string name="hint_message">Type a message…</string>
+    <string name="label_guest_profile">Sign in to view your profile</string>
 </resources>

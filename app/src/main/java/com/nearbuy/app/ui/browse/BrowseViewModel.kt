@@ -99,7 +99,7 @@ class BrowseViewModel : ViewModel() {
 
                 // 5. Swap Available
                 if (swapOnly) {
-                    list = list.filter { it.isSwapAvailable }
+                    list = list.filter { it.isSwapAllowed }
                 }
 
                 list

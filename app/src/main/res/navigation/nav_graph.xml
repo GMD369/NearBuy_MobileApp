@@ -51,7 +51,11 @@
         android:id="@+id/nav_profile"
         android:name="com.nearbuy.app.ui.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_nav_profile_to_nav_detail"
+            app:destination="@id/nav_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_login"
@@ -64,5 +68,22 @@
         android:name="com.nearbuy.app.ui.auth.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" />
+
+    <fragment
+        android:id="@+id/nav_onboarding"
+        android:name="com.nearbuy.app.ui.onboarding.OnboardingFragment"
+        android:label="Welcome"
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/action_onboarding_to_login"
+            app:destination="@id/nav_login"
+            app:popUpTo="@id/nav_onboarding"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_onboarding_to_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_onboarding"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

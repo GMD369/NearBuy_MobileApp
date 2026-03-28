@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/semester 6/mad/NearBuy/NearBuy_MobileApp/gradle/**)"
+    ]
+  }
+}

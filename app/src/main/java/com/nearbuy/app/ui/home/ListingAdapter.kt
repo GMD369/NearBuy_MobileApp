@@ -67,9 +67,9 @@ class ListingAdapter(private val onItemClick: (Listing, View) -> Unit) :
                 tvListingTitle.text = listing.title
                 tvListingPrice.text = formatPrice(listing.price)
                 tvListingLocation.text = listing.location
-                tvSellerRatingOnCard.text = listing.user.rating.toString()
-                
-                chipSwapBadge.visibility = if (listing.isSwapAvailable) View.VISIBLE else View.GONE
+                tvSellerRatingOnCard.text = "4.5"
+
+                chipSwapBadge.visibility = if (listing.isSwapAllowed) View.VISIBLE else View.GONE
                 
                 setupDealBadge(listing.price, listing.category)
                 
@@ -91,7 +91,7 @@ class ListingAdapter(private val onItemClick: (Listing, View) -> Unit) :
                 val isNew = System.currentTimeMillis() - listing.createdAt < TimeUnit.DAYS.toMillis(1)
                 chipNewBadge.visibility = if (isNew) View.VISIBLE else View.GONE
                 
-                ivListingImage.load(listing.imageUrl) {
+                ivListingImage.load(listing.imagePaths.firstOrNull()) {
                     crossfade(true)
                     placeholder(android.R.color.darker_gray)
                     error(android.R.color.darker_gray)

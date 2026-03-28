@@ -1,6 +1,5 @@
 package com.nearbuy.app.ui.onboarding
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.R
 import com.nearbuy.app.databinding.FragmentOnboardingBinding
 
@@ -72,13 +72,9 @@ class OnboardingFragment : Fragment() {
     }
 
     private fun completeOnboarding() {
-        val sharedPref = requireActivity().getSharedPreferences("NearBuyPrefs", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putBoolean("onboarding_completed", true)
-            apply()
-        }
-        // Navigate to home or auth
-        findNavController().navigate(R.id.nav_home)
+        val session = (requireActivity().application as NearBuyApplication).sessionManager
+        session.isOnboardingDone = true
+        findNavController().navigate(R.id.action_onboarding_to_login)
     }
 
     override fun onDestroyView() {

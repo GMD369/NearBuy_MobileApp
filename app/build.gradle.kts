@@ -64,6 +64,9 @@ dependencies {
     // Shimmer (Skeleton Loading)
     implementation(libs.shimmer)
 
+    // Gson (JSON serialization)
+    implementation(libs.gson)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -4,30 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.chip.Chip
+import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.R
+import com.nearbuy.app.data.model.Listing
 import com.nearbuy.app.databinding.FragmentBrowseBinding
-import com.nearbuy.app.ui.home.ListingAdapter
+import com.nearbuy.app.ui.adapter.ListingAdapter
 
 class BrowseFragment : Fragment() {
 
     private var _binding: FragmentBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: BrowseViewModel by viewModels()
     private lateinit var listingAdapter: ListingAdapter
-    private var isGridView = true
+    private lateinit var repo: com.nearbuy.app.data.repository.ListingRepository
+    private var allListings: List<Listing> = emptyList()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBrowseBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,130 +32,97 @@ class BrowseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        repo = (requireActivity().application as NearBuyApplication).listingRepository
+
         setupRecyclerView()
-        setupSearchView()
-        setupButtons()
-        observeViewModel()
-        
-        updateToggleIcon()
+        setupSearch()
+        loadListings()
+
+        binding.btnFilter.setOnClickListener {
+            // Toggle swap-only filter
+            val swapOnly = binding.btnFilter.text == getString(android.R.string.ok)
+            if (!swapOnly) {
+                val swapListings = allListings.filter { it.isSwapAllowed }
+                showListings(swapListings)
+                binding.btnFilter.text = getString(R.string.label_all)
+                binding.layoutActiveFilters.isVisible = true
+            } else {
+                showListings(allListings)
+                binding.btnFilter.text = getString(R.string.label_filter)
+                binding.layoutActiveFilters.isVisible = false
+            }
+        }
+
+        binding.btnClearFilters.setOnClickListener {
+            showListings(allListings)
+            binding.layoutActiveFilters.isVisible = false
+            binding.btnFilter.text = getString(R.string.label_filter)
+        }
+
+        binding.btnResetFiltersEmpty.setOnClickListener {
+            showListings(allListings)
+            binding.layoutActiveFilters.isVisible = false
+        }
     }
 
     private fun setupRecyclerView() {
-        listingAdapter = ListingAdapter { listing, _ ->
-            val action = BrowseFragmentDirections.actionNavBrowseToNavDetail(listing.id)
-            findNavController().navigate(action)
-        }
-        
+        val app    = requireActivity().application as NearBuyApplication
+        val userId = app.sessionManager.userId
+
+        listingAdapter = ListingAdapter(
+            onItemClick = { listing ->
+                val action = BrowseFragmentDirections.actionNavBrowseToNavDetail(listing.id)
+                findNavController().navigate(action)
+            },
+            onFavoriteClick = { listing ->
+                val currentUserId = app.sessionManager.userId
+                if (app.sessionManager.isLoggedIn) {
+                    repo.toggleFavorite(currentUserId, listing.id)
+                    listingAdapter.updateFavorites(repo.getFavorites(currentUserId))
+                }
+            }
+        )
+        listingAdapter.updateFavorites(repo.getFavorites(userId))
         binding.rvBrowseListings.apply {
-            adapter = listingAdapter
             layoutManager = GridLayoutManager(requireContext(), 2)
-            scheduleLayoutAnimation()
+            adapter = listingAdapter
         }
     }
 
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+    private fun setupSearch() {
+        binding.searchView.setOnQueryTextListener(object :
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { viewModel.search(it) }
+                val results = if (query.isNullOrBlank()) allListings
+                              else repo.searchListings(query)
+                showListings(results)
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { viewModel.search(it) }
+                val results = if (newText.isNullOrBlank()) allListings
+                              else repo.searchListings(newText)
+                showListings(results)
                 return true
             }
         })
     }
 
-    private fun setupButtons() {
-        binding.btnToggleLayout.setOnClickListener {
-            toggleLayout()
-        }
-
-        binding.btnFilter.setOnClickListener {
-            val bottomSheet = FilterBottomSheet.newInstance { min, max, category, condition, swapOnly ->
-                viewModel.applyFilters(min, max, category, condition, swapOnly)
-            }
-            bottomSheet.show(childFragmentManager, FilterBottomSheet.TAG)
-        }
-
-        binding.btnClearFilters.setOnClickListener {
-            viewModel.clearFilters()
-            binding.searchView.setQuery("", false)
-        }
-
-        binding.btnResetFiltersEmpty.setOnClickListener {
-            viewModel.clearFilters()
-            binding.searchView.setQuery("", false)
-        }
+    private fun loadListings() {
+        binding.shimmerView.isVisible = true
+        binding.shimmerView.startShimmer()
+        allListings = repo.getAllListings()
+        binding.shimmerView.stopShimmer()
+        binding.shimmerView.isVisible = false
+        showListings(allListings)
     }
 
-    private fun toggleLayout() {
-        isGridView = !isGridView
-        binding.rvBrowseListings.layoutManager = if (isGridView) {
-            GridLayoutManager(requireContext(), 2)
-        } else {
-            LinearLayoutManager(requireContext())
-        }
-        updateToggleIcon()
-        binding.rvBrowseListings.scheduleLayoutAnimation()
+    private fun showListings(listings: List<Listing>) {
+        listingAdapter.submitList(listings)
+        binding.rvBrowseListings.isVisible = listings.isNotEmpty()
+        binding.layoutEmpty.isVisible      = listings.isEmpty()
+        binding.tvResultCount.text         = "${listings.size} items found"
     }
 
-    private fun updateToggleIcon() {
-        val iconRes = if (isGridView) {
-            android.R.drawable.ic_menu_sort_by_size 
-        } else {
-            android.R.drawable.ic_dialog_dialer 
-        }
-        binding.btnToggleLayout.setIconResource(iconRes)
-    }
-
-    private fun observeViewModel() {
-        viewModel.searchResults.observe(viewLifecycleOwner) { listings ->
-            listingAdapter.submitList(listings)
-            
-            // Update Result Count
-            binding.tvResultCount.text = "${listings.size} items found"
-            
-            // Handle Empty State
-            if (listings.isEmpty()) {
-                binding.layoutEmpty.visibility = View.VISIBLE
-                binding.rvBrowseListings.visibility = View.GONE
-            } else {
-                binding.layoutEmpty.visibility = View.GONE
-                binding.rvBrowseListings.visibility = View.VISIBLE
-            }
-        }
-
-        viewModel.activeFilters.observe(viewLifecycleOwner) { filters ->
-            updateFilterChips(filters)
-        }
-    }
-
-    private fun updateFilterChips(filters: List<String>) {
-        binding.cgActiveFilters.removeAllViews()
-        
-        if (filters.isEmpty()) {
-            binding.layoutActiveFilters.visibility = View.GONE
-        } else {
-            binding.layoutActiveFilters.visibility = View.VISIBLE
-            filters.forEach { filterText ->
-                val chip = Chip(requireContext()).apply {
-                    text = filterText
-                    isCheckable = false
-                    isCloseIconVisible = false // Keep it simple for now
-                    setChipBackgroundColorResource(R.color.md_theme_primaryContainer)
-                    setTextColor(resources.getColor(R.color.md_theme_onPrimaryContainer, null))
-                    chipStrokeWidth = 0f
-                    textSize = 11f
-                }
-                binding.cgActiveFilters.addView(chip)
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onResume() { super.onResume(); loadListings() }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }

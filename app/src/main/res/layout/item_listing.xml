@@ -64,18 +64,17 @@
                 app:chipStrokeWidth="0dp" />
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageButton
             android:id="@+id/btnFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/btn_star_big_off"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="6dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Save listing"
+            android:src="@drawable/ic_bookmark_off"
             app:tint="?attr/colorPrimary"
-            app:backgroundTint="?attr/colorSurface"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:elevation="4dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/ivListingImage" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipNewBadge"
