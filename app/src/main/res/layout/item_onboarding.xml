@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/bg_onboarding_blob"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/contentCard"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,24 +21,25 @@
 
         <!-- Decorative ring outer -->
         <View
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_ring_outer" />
 
         <!-- Decorative ring inner -->
         <View
-            android:layout_width="220dp"
-            android:layout_height="220dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_ring_inner" />
 
         <!-- Main illustration -->
         <ImageView
             android:id="@+id/ivOnboarding"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_gravity="center"
+            android:padding="8dp"
             android:scaleType="fitCenter" />
 
     </FrameLayout>
@@ -46,6 +49,9 @@
         android:id="@+id/contentCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="32dp"
         app:cardElevation="0dp"
@@ -56,10 +62,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:paddingTop="36dp"
-            android:paddingBottom="32dp">
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="24dp">
 
             <!-- Badge pill -->
             <TextView
@@ -79,7 +85,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 app:layout_constraintBottom_toTopOf="@id/tvTitle" />
 
             <!-- Title -->
@@ -97,7 +103,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/tvDescription"
-                android:layout_marginBottom="14dp" />
+                android:layout_marginBottom="10dp" />
 
             <!-- Description -->
             <TextView
