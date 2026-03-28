@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.NearBuy" parent="Base.Theme.NearBuy" />
+
+    <style name="Theme.NearBuy.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.NearBuy</item>
+    </style>
 </resources>

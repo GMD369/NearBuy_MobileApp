@@ -32,12 +32,8 @@ class RegisterFragment : Fragment() {
         authViewModel.authResult.observe(viewLifecycleOwner) { result ->
             binding.btnRegister.isEnabled = true
             when (result) {
-                is AuthResult.Success -> {
-                    findNavController().navigate(R.id.nav_home)
-                }
-                is AuthResult.Error -> {
-                    Snackbar.make(binding.root, result.message, Snackbar.LENGTH_LONG).show()
-                }
+                is AuthResult.Success -> findNavController().navigate(R.id.nav_home)
+                is AuthResult.Error -> Snackbar.make(binding.root, result.message, Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -64,6 +60,7 @@ class RegisterFragment : Fragment() {
             authViewModel.register(name, email, password, password)
         }
 
+        // TextView — no cast needed
         binding.btnGoToLogin.setOnClickListener {
             findNavController().navigate(R.id.nav_login)
         }
