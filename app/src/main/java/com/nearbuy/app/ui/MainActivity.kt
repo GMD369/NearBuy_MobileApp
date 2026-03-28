@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.nearbuy.app.NearBuyApplication
@@ -24,6 +27,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // DO NOT use edge to edge — let system handle insets normally
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -34,8 +41,9 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNavigation.visibility =
-                if (destination.id in noNavDestinations) View.GONE else View.VISIBLE
+            val show = destination.id !in noNavDestinations
+            binding.bottomNavigation.visibility = if (show) View.VISIBLE else View.GONE
+            binding.navDivider.visibility = if (show) View.VISIBLE else View.GONE
         }
 
         if (savedInstanceState == null) {

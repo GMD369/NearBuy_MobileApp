@@ -5,17 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.chip.Chip
 import com.nearbuy.app.NearBuyApplication
-import com.nearbuy.app.R
 import com.nearbuy.app.databinding.FragmentHomeBinding
 import com.nearbuy.app.ui.adapter.ListingAdapter
-import com.nearbuy.app.ui.auth.AuthViewModel
+import com.nearbuy.app.ui.browse.FilterBottomSheet
 
 class HomeFragment : Fragment() {
 
@@ -23,18 +20,25 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private val authViewModel: AuthViewModel  by activityViewModels()
     private lateinit var listingAdapter: ListingAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.swipeRefresh.setColorSchemeColors(
+            requireContext().getColor(android.R.color.holo_orange_dark)
+        )
+
         setupRecyclerView()
-        setupChips()
         setupSearch()
         observeData()
 
@@ -43,19 +47,26 @@ class HomeFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = false
         }
 
+        binding.btnFilter.setOnClickListener {
+            FilterBottomSheet { min, max, category, condition, swapOnly ->
+                homeViewModel.applyFilter(min, max, category, condition, swapOnly)
+            }.show(childFragmentManager, FilterBottomSheet.TAG)
+        }
+
         binding.fabToTop.setOnClickListener {
             binding.rvListings.smoothScrollToPosition(0)
         }
 
         binding.rvListings.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 10) binding.fabToTop.show() else if (dy < -10) binding.fabToTop.hide()
+                if (dy > 10) binding.fabToTop.show()
+                else if (dy < -10) binding.fabToTop.hide()
             }
         })
     }
 
     private fun setupRecyclerView() {
-        val app  = requireActivity().application as NearBuyApplication
+        val app = requireActivity().application as NearBuyApplication
         val repo = app.listingRepository
         val userId = app.sessionManager.userId
 
@@ -65,33 +76,18 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onFavoriteClick = { listing ->
-                val currentUserId = app.sessionManager.userId
                 if (app.sessionManager.isLoggedIn) {
-                    repo.toggleFavorite(currentUserId, listing.id)
-                    listingAdapter.updateFavorites(repo.getFavorites(currentUserId))
+                    repo.toggleFavorite(userId, listing.id)
+                    listingAdapter.updateFavorites(repo.getFavorites(userId))
                 }
             }
         )
+
         listingAdapter.updateFavorites(repo.getFavorites(userId))
+
         binding.rvListings.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = listingAdapter
-        }
-    }
-
-    private fun setupChips() {
-        val categories = homeViewModel.getCategories()
-        binding.chipGroupCategories.removeAllViews()
-        categories.forEachIndexed { index, cat ->
-            val chip = Chip(requireContext()).apply {
-                text = cat
-                isCheckable = true
-                isChecked   = index == 0
-                setOnCheckedChangeListener { _, checked ->
-                    if (checked) homeViewModel.filterByCategory(cat)
-                }
-            }
-            binding.chipGroupCategories.addView(chip)
         }
     }
 
@@ -124,7 +120,8 @@ class HomeFragment : Fragment() {
 
         homeViewModel.listings.observe(viewLifecycleOwner) { listings ->
             listingAdapter.submitList(listings)
-            binding.layoutEmpty.visibility = if (listings.isEmpty()) View.VISIBLE else View.GONE
+            binding.layoutEmpty.visibility =
+                if (listings.isEmpty()) View.VISIBLE else View.GONE
             binding.layoutError.visibility = View.GONE
         }
     }
@@ -134,5 +131,8 @@ class HomeFragment : Fragment() {
         homeViewModel.loadListings()
     }
 
-    override fun onDestroyView() { super.onDestroyView(); _binding = null }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

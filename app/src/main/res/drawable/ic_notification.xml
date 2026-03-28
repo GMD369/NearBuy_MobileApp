@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Bell body -->
+    <path
+        android:fillColor="#555555"
+        android:pathData="M12,2 C12,2 7,4.5 7,11 L7,16 L5,18 L19,18 L17,16 L17,11 C17,4.5 12,2 12,2Z" />
+    <!-- Bell base / clapper -->
+    <path
+        android:fillColor="#555555"
+        android:pathData="M10,18 Q10,20 12,20 Q14,20 14,18Z" />
+</vector>

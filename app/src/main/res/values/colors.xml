@@ -12,6 +12,8 @@
     <color name="md_theme_secondary">#50606E</color>
     <color name="md_theme_onSecondary">#FFFFFF</color>
 
+    <color name="chip_bg_checked">#FFF0E6</color>
+    <color name="chip_bg_unchecked">#F4F4F4</color>
     <color name="md_theme_tertiary">#65587B</color>
     <color name="md_theme_onTertiary">#FFFFFF</color>
     <color name="md_theme_tertiaryContainer">#ECDCFF</color>
