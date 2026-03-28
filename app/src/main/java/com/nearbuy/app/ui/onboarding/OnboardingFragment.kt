@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -29,32 +31,52 @@ class OnboardingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Handle system bars — status bar top, nav bar bottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.btnSkip.setPadding(
+                binding.btnSkip.paddingLeft,
+                systemBars.top + 16,
+                binding.btnSkip.paddingRight,
+                binding.btnSkip.paddingBottom
+            )
+            binding.bottomBar.setPadding(
+                28.dpToPx(),
+                0,
+                28.dpToPx(),
+                systemBars.bottom + 8
+            )
+            insets
+        }
+
         val onboardingItems = listOf(
             OnboardingItem(
-                "Welcome to NearBuy",
-                "Discover hidden gems in your own neighborhood. Buy and sell with ease.",
-                android.R.drawable.ic_menu_myplaces
+                "Discover NearBuy",
+                "Find hidden gems in your neighborhood. Buy and sell with people near you.",
+                R.drawable.ic_onboarding_discover
             ),
             OnboardingItem(
                 "Swap & Save",
-                "Don't have cash? No problem! Propose a trade and swap items you no longer need.",
-                android.R.drawable.ic_menu_share
+                "No cash? No problem. Propose a trade and swap items you no longer need.",
+                R.drawable.ic_onboarding_swap
             ),
             OnboardingItem(
                 "Safe & Secure",
-                "Chat with verified users and meet in safe public zones.",
-                android.R.drawable.ic_lock_idle_lock
+                "Chat with verified users and meet in trusted public zones near you.",
+                R.drawable.ic_onboarding_secure
             )
         )
 
         val adapter = OnboardingAdapter(onboardingItems)
         binding.onboardingViewPager.adapter = adapter
+        binding.onboardingViewPager.offscreenPageLimit = 1
 
         TabLayoutMediator(binding.indicator, binding.onboardingViewPager) { _, _ -> }.attach()
 
         binding.btnNext.setOnClickListener {
-            if (binding.onboardingViewPager.currentItem < onboardingItems.size - 1) {
-                binding.onboardingViewPager.currentItem += 1
+            val current = binding.onboardingViewPager.currentItem
+            if (current < onboardingItems.size - 1) {
+                binding.onboardingViewPager.currentItem = current + 1
             } else {
                 completeOnboarding()
             }
@@ -64,12 +86,17 @@ class OnboardingFragment : Fragment() {
             completeOnboarding()
         }
 
-        binding.onboardingViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.onboardingViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                binding.btnNext.text = if (position == onboardingItems.size - 1) "Get Started" else "Next"
+                binding.btnNext.text =
+                    if (position == onboardingItems.size - 1) "Get Started" else "Next"
             }
         })
     }
+
+    private fun Int.dpToPx(): Int =
+        (this * resources.displayMetrics.density).toInt()
 
     private fun completeOnboarding() {
         val session = (requireActivity().application as NearBuyApplication).sessionManager
