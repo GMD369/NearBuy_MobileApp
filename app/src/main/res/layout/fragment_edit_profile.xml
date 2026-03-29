@@ -151,14 +151,14 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Location -->
+        <!-- Province Dropdown -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilEditLocation"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:id="@+id/tilEditProvince"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="City / Location"
+            android:hint="Province"
             app:boxCornerRadiusTopStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
@@ -169,11 +169,41 @@
             app:startIconDrawable="@drawable/ic_location_pin"
             app:startIconTint="#FF6600">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEditLocation"
+            <AutoCompleteTextView
+                android:id="@+id/acEditProvince"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords"
+                android:inputType="none"
+                android:textSize="15sp"
+                android:textColor="#0D0D0D"
+                android:fontFamily="sans-serif" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- City Dropdown (Dependent on Province) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEditLocation"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="City"
+            android:enabled="false"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="#DDDDDD"
+            app:boxStrokeWidth="1.5dp"
+            app:hintTextColor="#FF6600"
+            app:startIconDrawable="@drawable/ic_location_pin"
+            app:startIconTint="#FF6600">
+
+            <AutoCompleteTextView
+                android:id="@+id/acEditLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
                 android:textSize="15sp"
                 android:textColor="#0D0D0D"
                 android:fontFamily="sans-serif" />

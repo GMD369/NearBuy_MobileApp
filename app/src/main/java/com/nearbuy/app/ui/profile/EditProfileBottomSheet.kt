@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
@@ -20,8 +21,16 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
     
-    // Scoped to the parent fragment (ProfileFragment) to share the same instance
     private val profileViewModel: ProfileViewModel by viewModels(ownerProducer = { requireParentFragment() })
+
+    private val provinces = listOf("Punjab", "Sindh", "Khyber Pakhtunkhwa", "Balochistan", "Islamabad Capital Territory")
+    private val citiesMap = mapOf(
+        "Punjab" to listOf("Lahore", "Faisalabad", "Rawalpindi", "Gujranwala", "Multan", "Sialkot", "Bahawalpur", "Sargodha"),
+        "Sindh" to listOf("Karachi", "Hyderabad", "Sukkur", "Larkana", "Nawabshah", "Mirpur Khas"),
+        "Khyber Pakhtunkhwa" to listOf("Peshawar", "Mardan", "Abbottabad", "Mingora", "Kohat", "Dera Ismail Khan"),
+        "Balochistan" to listOf("Quetta", "Turbat", "Khuzdar", "Hub", "Chaman", "Gwadar"),
+        "Islamabad Capital Territory" to listOf("Islamabad")
+    )
 
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { saveProfileImage(it) }
@@ -39,13 +48,14 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Observe user data to pre-fill fields and handle updates
+        setupLocationSpinners()
+
         profileViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 if (binding.etEditName.text.isNullOrBlank()) {
                     binding.etEditName.setText(it.name)
                     binding.etEditPhone.setText(it.phone)
-                    binding.etEditLocation.setText(it.location)
+                    // Location logic handled in setupLocationSpinners pre-fill
                     binding.etEditBio.setText(it.bio)
                 }
                 
@@ -73,20 +83,53 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
             }
             binding.tilEditName.error = null
             
-            val phone    = binding.etEditPhone.text.toString().trim()
-            val location = binding.etEditLocation.text.toString().trim()
-            val bio      = binding.etEditBio.text.toString().trim()
+            val city = binding.acEditLocation.text.toString().trim()
+            if (city.isBlank()) {
+                Toast.makeText(requireContext(), "Please select a city", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             profileViewModel.updateProfile(
                 name     = name,
-                phone    = phone,
-                location = location,
-                bio      = bio
+                phone    = binding.etEditPhone.text.toString().trim(),
+                location = city,
+                bio      = binding.etEditBio.text.toString().trim()
             )
             
             Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
             dismiss()
         }
+    }
+
+    private fun setupLocationSpinners() {
+        val provinceAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, provinces)
+        binding.acEditProvince.setAdapter(provinceAdapter)
+
+        binding.acEditProvince.setOnItemClickListener { _, _, position, _ ->
+            val selectedProvince = provinces[position]
+            updateCityDropdown(selectedProvince)
+        }
+
+        // Pre-fill location if user already has one
+        profileViewModel.user.value?.location?.let { currentLocation ->
+            if (currentLocation.isNotBlank()) {
+                // Find which province this city belongs to
+                val province = citiesMap.entries.find { it.value.contains(currentLocation) }?.key
+                if (province != null) {
+                    binding.acEditProvince.setText(province, false)
+                    updateCityDropdown(province)
+                    binding.acEditLocation.setText(currentLocation, false)
+                }
+            }
+        }
+    }
+
+    private fun updateCityDropdown(province: String) {
+        val cities = citiesMap[province] ?: emptyList()
+        val cityAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, cities)
+        binding.acEditLocation.setAdapter(cityAdapter)
+        binding.acEditLocation.setText("") // Clear previous selection
+        binding.tilEditLocation.isEnabled = true
     }
 
     private fun saveProfileImage(uri: Uri) {
