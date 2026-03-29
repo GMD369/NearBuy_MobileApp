@@ -33,10 +33,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             currentQuery.isNotBlank() -> repo.searchListings(currentQuery)
             else                      -> repo.getListingsByCategory(currentCategory)
         }
+        
         if (minPrice != Double.MIN_VALUE) result = result.filter { it.price >= minPrice }
         if (maxPrice != Double.MAX_VALUE) result = result.filter { it.price <= maxPrice }
-        currentCondition?.let { cond -> result = result.filter { it.condition.equals(cond, ignoreCase = true) } }
+        
+        currentCondition?.let { cond -> 
+            result = result.filter { it.condition.equals(cond, ignoreCase = true) } 
+        }
+        
         if (swapOnly) result = result.filter { it.isSwapAllowed }
+        
         _listings.value  = result
         _isLoading.value = false
     }
@@ -44,9 +50,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun applyFilter(min: Double, max: Double, category: String?, condition: String?, swapOnly: Boolean) {
         minPrice          = min
         maxPrice          = max
-        category?.let     { currentCategory = it }
+        category?.let     { currentCategory = it } ?: run { currentCategory = "All" }
         currentCondition  = condition
         this.swapOnly     = swapOnly
+        loadListings()
+    }
+
+    fun resetFilters() {
+        currentCategory = "All"
+        currentQuery    = ""
+        minPrice        = Double.MIN_VALUE
+        maxPrice        = Double.MAX_VALUE
+        currentCondition = null
+        swapOnly        = false
         loadListings()
     }
 
