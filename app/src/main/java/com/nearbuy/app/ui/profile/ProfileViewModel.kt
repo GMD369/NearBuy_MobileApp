@@ -24,12 +24,33 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _savedListings = MutableLiveData<List<Listing>>()
     val savedListings: LiveData<List<Listing>> = _savedListings
 
+    private val _favoriteIds = MutableLiveData<Set<String>>()
+    val favoriteIds: LiveData<Set<String>> = _favoriteIds
+
+    init {
+        loadProfile()
+    }
+
     fun loadProfile() {
-        if (!session.isLoggedIn) { _user.value = null; return }
-        val u = userRepo.getUserById(session.userId)
+        if (!session.isLoggedIn) {
+            _user.value = null
+            _userListings.value = emptyList()
+            _savedListings.value = emptyList()
+            _favoriteIds.value = emptySet()
+            return
+        }
+        val userId = session.userId
+        val u = userRepo.getUserById(userId)
         _user.value = u
         _userListings.value = if (u != null) listRepo.getListingsByUser(u.id) else emptyList()
-        _savedListings.value = listRepo.getFavoriteListings(session.userId)
+        _savedListings.value = listRepo.getFavoriteListings(userId)
+        _favoriteIds.value = listRepo.getFavorites(userId)
+    }
+
+    fun toggleFavorite(listingId: String) {
+        if (!session.isLoggedIn) return
+        listRepo.toggleFavorite(session.userId, listingId)
+        loadProfile()
     }
 
     fun updateProfileImage(imagePath: String) {
@@ -39,8 +60,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun updateProfile(name: String, phone: String, location: String, bio: String) {
-        val current = _user.value ?: return
+        val userId = session.userId
+        if (userId.isBlank()) return
+
+        val current = _user.value ?: userRepo.getUserById(userId) ?: return
         val updated = current.copy(name = name, phone = phone, location = location, bio = bio)
+
         userRepo.updateUser(updated)
         session.userName = name
         loadProfile()

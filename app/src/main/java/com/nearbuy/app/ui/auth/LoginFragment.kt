@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.nearbuy.app.R
@@ -30,10 +31,20 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         authViewModel.authResult.observe(viewLifecycleOwner) { result ->
+            if (result == null) return@observe
+            
             binding.btnLogin.isEnabled = true
             when (result) {
-                is AuthResult.Success -> findNavController().navigate(R.id.nav_home)
-                is AuthResult.Error -> Snackbar.make(binding.root, result.message, Snackbar.LENGTH_LONG).show()
+                is AuthResult.Success -> {
+                    authViewModel.clearAuthResult()
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_login, true)
+                        .build()
+                    findNavController().navigate(R.id.nav_home, null, navOptions)
+                }
+                is AuthResult.Error -> {
+                    Snackbar.make(binding.root, result.message, Snackbar.LENGTH_LONG).show()
+                }
             }
         }
 
@@ -54,7 +65,6 @@ class LoginFragment : Fragment() {
             authViewModel.login(email, password)
         }
 
-        // TextView — no cast needed, ViewBinding handles it
         binding.btnGoToRegister.setOnClickListener {
             findNavController().navigate(R.id.nav_register)
         }

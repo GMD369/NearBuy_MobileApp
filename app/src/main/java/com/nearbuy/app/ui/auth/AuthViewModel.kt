@@ -18,8 +18,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val userRepo = app.userRepository
     private val session  = app.sessionManager
 
-    private val _authResult = MutableLiveData<AuthResult>()
-    val authResult: LiveData<AuthResult> = _authResult
+    private val _authResult = MutableLiveData<AuthResult?>()
+    val authResult: LiveData<AuthResult?> = _authResult
 
     private val _currentUser = MutableLiveData<User?>()
     val currentUser: LiveData<User?> = _currentUser
@@ -65,6 +65,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun logout() {
         session.logout()
         _currentUser.value = null
+        _authResult.value = null // Clear result so LoginFragment doesn't auto-redirect
+    }
+
+    fun clearAuthResult() {
+        _authResult.value = null
     }
 
     fun isLoggedIn(): Boolean = session.isLoggedIn

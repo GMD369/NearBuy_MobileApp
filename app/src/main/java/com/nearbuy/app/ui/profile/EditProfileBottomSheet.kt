@@ -19,6 +19,8 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
+    
+    // Scoped to the parent fragment (ProfileFragment) to share the same instance
     private val profileViewModel: ProfileViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -37,19 +39,25 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Pre-fill current user data
-        profileViewModel.user.value?.let { user ->
-            binding.etEditName.setText(user.name)
-            binding.etEditPhone.setText(user.phone)
-            binding.etEditLocation.setText(user.location)
-            binding.etEditBio.setText(user.bio)
-            if (user.profileImagePath.isNotBlank()) {
-                binding.ivEditProfileImage.load(File(user.profileImagePath)) {
-                    crossfade(true)
-                    placeholder(R.drawable.ic_launcher_background)
+        // Observe user data to pre-fill fields and handle updates
+        profileViewModel.user.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                if (binding.etEditName.text.isNullOrBlank()) {
+                    binding.etEditName.setText(it.name)
+                    binding.etEditPhone.setText(it.phone)
+                    binding.etEditLocation.setText(it.location)
+                    binding.etEditBio.setText(it.bio)
                 }
-            } else {
-                binding.ivEditProfileImage.load(R.drawable.ic_launcher_background)
+                
+                if (it.profileImagePath.isNotBlank()) {
+                    binding.ivEditProfileImage.load(File(it.profileImagePath)) {
+                        crossfade(true)
+                        placeholder(R.drawable.ic_launcher_background)
+                        error(R.drawable.ic_launcher_background)
+                    }
+                } else {
+                    binding.ivEditProfileImage.load(R.drawable.ic_launcher_background)
+                }
             }
         }
 
@@ -64,12 +72,18 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
                 return@setOnClickListener
             }
             binding.tilEditName.error = null
+            
+            val phone    = binding.etEditPhone.text.toString().trim()
+            val location = binding.etEditLocation.text.toString().trim()
+            val bio      = binding.etEditBio.text.toString().trim()
+
             profileViewModel.updateProfile(
                 name     = name,
-                phone    = binding.etEditPhone.text.toString().trim(),
-                location = binding.etEditLocation.text.toString().trim(),
-                bio      = binding.etEditBio.text.toString().trim()
+                phone    = phone,
+                location = location,
+                bio      = bio
             )
+            
             Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
             dismiss()
         }
@@ -87,7 +101,6 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
             }
 
             profileViewModel.updateProfileImage(target.absolutePath)
-            binding.ivEditProfileImage.load(target) { crossfade(true) }
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show()
         }

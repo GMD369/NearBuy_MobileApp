@@ -30,9 +30,14 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         authViewModel.authResult.observe(viewLifecycleOwner) { result ->
+            if (result == null) return@observe
+
             binding.btnRegister.isEnabled = true
             when (result) {
-                is AuthResult.Success -> findNavController().navigate(R.id.nav_home)
+                is AuthResult.Success -> {
+                    authViewModel.clearAuthResult()
+                    findNavController().navigate(R.id.nav_home)
+                }
                 is AuthResult.Error -> Snackbar.make(binding.root, result.message, Snackbar.LENGTH_LONG).show()
             }
         }

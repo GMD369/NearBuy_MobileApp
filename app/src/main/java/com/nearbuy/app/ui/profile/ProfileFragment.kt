@@ -55,10 +55,15 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        listingAdapter = ListingAdapter(onItemClick = { listing ->
-            val action = ProfileFragmentDirections.actionNavProfileToNavDetail(listing.id)
-            findNavController().navigate(action)
-        })
+        listingAdapter = ListingAdapter(
+            onItemClick = { listing ->
+                val action = ProfileFragmentDirections.actionNavProfileToNavDetail(listing.id)
+                findNavController().navigate(action)
+            },
+            onFavoriteClick = { listing ->
+                profileViewModel.toggleFavorite(listing.id)
+            }
+        )
         binding.rvUserListings.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = listingAdapter
@@ -127,6 +132,10 @@ class ProfileFragment : Fragment() {
         profileViewModel.savedListings.observe(viewLifecycleOwner) { listings ->
             if (binding.tabLayout.selectedTabPosition == 1)
                 listingAdapter.submitList(listings)
+        }
+
+        profileViewModel.favoriteIds.observe(viewLifecycleOwner) { ids ->
+            listingAdapter.updateFavorites(ids)
         }
 
         binding.tabLayout.addOnTabSelectedListener(object :
