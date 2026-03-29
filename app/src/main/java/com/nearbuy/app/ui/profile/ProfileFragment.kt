@@ -8,6 +8,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.load
@@ -78,7 +79,12 @@ class ProfileFragment : Fragment() {
                 }
                 R.id.menu_logout -> {
                     authViewModel.logout()
-                    findNavController().navigate(R.id.nav_login)
+                    
+                    // Clear backstack so user can't go back to profile
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_graph, true)
+                        .build()
+                    findNavController().navigate(R.id.nav_login, null, navOptions)
                     true
                 }
                 else -> false
