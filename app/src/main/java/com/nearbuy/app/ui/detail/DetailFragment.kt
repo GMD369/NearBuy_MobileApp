@@ -60,6 +60,7 @@ class DetailFragment : Fragment() {
         binding.tvDetailTitle.text       = listing.title
         binding.tvDetailLocation.text    = listing.location
         binding.tvDetailCondition.text   = listing.condition
+        binding.tvSellerPhoneDetail.text = listing.sellerPhone
         binding.tvDetailDescription.text = listing.description.ifBlank { "No description provided." }
         binding.tvSellerName.text        = listing.sellerName
         binding.tvSellerRating.text      = "★ 4.5 Rating"

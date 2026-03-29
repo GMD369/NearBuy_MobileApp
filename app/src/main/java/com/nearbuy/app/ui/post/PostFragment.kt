@@ -119,6 +119,7 @@ class PostFragment : Fragment() {
         val listing = adapter.buildListing(
             sellerId     = session.userId,
             sellerName   = session.userName,
+            sellerPhone  = user?.phone ?: "",
             userLocation = user?.location ?: ""
         )
 

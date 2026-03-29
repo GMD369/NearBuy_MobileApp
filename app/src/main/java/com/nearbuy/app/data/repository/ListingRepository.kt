@@ -56,22 +56,22 @@ class ListingRepository(private val storage: LocalStorageManager) {
     fun seedSampleData(sellerId: String, sellerName: String) {
         if (getAllListings().isNotEmpty()) return
         val samples = listOf(
-            Listing(UUID.randomUUID().toString(), sellerId, sellerName,
+            Listing(UUID.randomUUID().toString(), sellerId, sellerName, "0300-1234567",
                 "Samsung Galaxy S21", "Used for 6 months, excellent condition", 45000.0,
                 "Electronics", "Like New", "Karachi"),
-            Listing(UUID.randomUUID().toString(), sellerId, sellerName,
+            Listing(UUID.randomUUID().toString(), sellerId, sellerName, "0300-1234567",
                 "Wooden Dining Table", "Solid wood, seats 6 people", 18000.0,
                 "Furniture", "Good", "Lahore"),
-            Listing(UUID.randomUUID().toString(), sellerId, sellerName,
+            Listing(UUID.randomUUID().toString(), sellerId, sellerName, "0300-1234567",
                 "Mountain Bike", "Trek bicycle, barely used", 25000.0,
                 "Sports", "Like New", "Islamabad"),
-            Listing(UUID.randomUUID().toString(), sellerId, sellerName,
+            Listing(UUID.randomUUID().toString(), sellerId, sellerName, "0300-1234567",
                 "Introduction to Algorithms", "CS textbook, 3rd edition", 2500.0,
                 "Books", "Good", "Karachi"),
-            Listing(UUID.randomUUID().toString(), sellerId, sellerName,
+            Listing(UUID.randomUUID().toString(), sellerId, sellerName, "0300-1234567",
                 "Leather Sofa Set", "3+2 seater, brown leather", 35000.0,
                 "Furniture", "Good", "Lahore"),
-            Listing(UUID.randomUUID().toString(), sellerId, sellerName,
+            Listing(UUID.randomUUID().toString(), sellerId, sellerName, "0300-1234567",
                 "Kids Bicycle", "Small red bicycle for age 5-8", 4000.0,
                 "Sports", "Good", "Rawalpindi", isSwapAllowed = true),
         )

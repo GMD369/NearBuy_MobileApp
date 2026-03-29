@@ -49,12 +49,13 @@ class PostStepAdapter(private val onPickImages: () -> Unit) : RecyclerView.Adapt
         notifyItemChanged(0)
     }
 
-    fun buildListing(sellerId: String, sellerName: String, userLocation: String): Listing? {
+    fun buildListing(sellerId: String, sellerName: String, sellerPhone: String, userLocation: String): Listing? {
         if (title.isBlank()) return null
         return Listing(
             id = UUID.randomUUID().toString(),
             sellerId = sellerId,
             sellerName = sellerName,
+            sellerPhone = sellerPhone,
             title = title,
             description = description,
             price = price,

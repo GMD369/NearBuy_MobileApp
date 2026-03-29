@@ -4,6 +4,7 @@ data class Listing(
     val id: String = "",
     val sellerId: String = "",
     val sellerName: String = "",
+    val sellerPhone: String = "",
     val title: String = "",
     val description: String = "",
     val price: Double = 0.0,
