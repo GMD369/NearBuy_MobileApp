@@ -28,20 +28,35 @@
             android:background="#FFF5EE"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Brand name -->
-        <TextView
-            android:id="@+id/tvBrand"
+        <!-- Brand name split color -->
+        <LinearLayout
+            android:id="@+id/layoutBrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginTop="52dp"
-            android:text="NearBuy"
-            android:textSize="32sp"
-            android:textColor="#FF6600"
-            android:fontFamily="sans-serif-black"
-            android:letterSpacing="-0.02"
+            android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Near"
+                android:textSize="32sp"
+                android:textColor="#FF6600"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="-0.02" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buy"
+                android:textSize="32sp"
+                android:textColor="#555555"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="-0.02" />
+        </LinearLayout>
 
         <!-- Title -->
         <TextView
@@ -55,7 +70,7 @@
             android:textColor="#0D0D0D"
             android:fontFamily="sans-serif-black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvBrand" />
+            app:layout_constraintTop_toBottomOf="@id/layoutBrand" />
 
         <!-- Subtitle -->
         <TextView
