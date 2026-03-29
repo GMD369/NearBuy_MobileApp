@@ -91,12 +91,18 @@ class DetailFragment : Fragment() {
             }
         }
 
+        // Hide Message and Make Offer buttons as requested
+        binding.btnMessageSeller.visibility = View.GONE
+        binding.btnMakeOffer.visibility = View.GONE
+
+        /*
         binding.btnMessageSeller.setOnClickListener {
             Toast.makeText(requireContext(), "Messaging coming soon!", Toast.LENGTH_SHORT).show()
         }
         binding.btnMakeOffer.setOnClickListener {
             Toast.makeText(requireContext(), "Offer sent! (stored locally)", Toast.LENGTH_SHORT).show()
         }
+        */
     }
 
     private fun setupImageCarousel(listing: Listing) {
