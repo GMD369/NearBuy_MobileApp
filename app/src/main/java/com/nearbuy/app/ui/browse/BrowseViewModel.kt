@@ -1,16 +1,19 @@
 package com.nearbuy.app.ui.browse
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nearbuy.app.data.mock.MockData
+import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.data.model.Listing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BrowseViewModel : ViewModel() {
+class BrowseViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repo = (application as NearBuyApplication).listingRepository
 
     private val _searchResults = MutableLiveData<List<Listing>>()
     val searchResults: LiveData<List<Listing>> = _searchResults
@@ -27,8 +30,7 @@ class BrowseViewModel : ViewModel() {
     private var swapOnly: Boolean = false
 
     init {
-        _searchResults.value = MockData.listings
-        _activeFilters.value = emptyList()
+        applyAllFilters()
     }
 
     fun search(query: String) {
@@ -59,36 +61,31 @@ class BrowseViewModel : ViewModel() {
         viewModelScope.launch {
             val filters = mutableListOf<String>()
             if (currentQuery.isNotBlank()) filters.add("Search: $currentQuery")
-            if (category != null && category != "All Categories") filters.add(category!!)
+            if (category != null && category != "All Categories" && category != "All") filters.add(category!!)
             if (condition != null) filters.add(condition!!)
             if (swapOnly) filters.add("Swap Available")
-            if (minPrice != null && maxPrice != null && (minPrice!! > 0 || maxPrice!! < 1000000)) {
-                filters.add("Price: Rs.${minPrice?.toInt()} - Rs.${maxPrice?.toInt()}")
-            }
+            
             _activeFilters.value = filters
 
             val filtered = withContext(Dispatchers.Default) {
-                var list = MockData.listings
+                var list = repo.getAllListings()
 
                 // 1. Search Query
                 if (currentQuery.isNotBlank()) {
+                    val q = currentQuery.lowercase()
                     list = list.filter { 
-                        it.title.contains(currentQuery, ignoreCase = true) || 
-                        it.description.contains(currentQuery, ignoreCase = true) ||
-                        it.category.contains(currentQuery, ignoreCase = true)
+                        it.title.lowercase().contains(q) || 
+                        it.description.lowercase().contains(q) ||
+                        it.category.lowercase().contains(q)
                     }
                 }
 
                 // 2. Price Range
-                minPrice?.let { min ->
-                    list = list.filter { it.price >= min }
-                }
-                maxPrice?.let { max ->
-                    list = list.filter { it.price <= max }
-                }
+                minPrice?.let { min -> list = list.filter { it.price >= min } }
+                maxPrice?.let { max -> list = list.filter { it.price <= max } }
 
                 // 3. Category
-                if (!category.isNullOrEmpty() && category != "All Categories") {
+                if (!category.isNullOrEmpty() && category != "All Categories" && category != "All") {
                     list = list.filter { it.category.equals(category, ignoreCase = true) }
                 }
 
