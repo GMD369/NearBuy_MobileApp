@@ -148,9 +148,9 @@
 
                 </LinearLayout>
 
-                <!-- Location -->
+                <!-- Phone -->
                 <LinearLayout
-                    android:id="@+id/layoutLocation"
+                    android:id="@+id/layoutPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -158,21 +158,35 @@
                     android:layout_marginTop="8dp"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
-                        android:src="@drawable/ic_location_pin"
-                        app:tint="#AAAAAA" />
+                    <TextView
+                        android:id="@+id/tvUserPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#AAAAAA"
+                        android:fontFamily="sans-serif"
+                        tools:text="📞 +92 300 1234567" />
+
+                </LinearLayout>
+
+                <!-- Location -->
+                <LinearLayout
+                    android:id="@+id/layoutLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tvUserLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
                         android:textSize="13sp"
                         android:textColor="#AAAAAA"
                         android:fontFamily="sans-serif"
-                        tools:text="Karachi" />
+                        tools:text="📍 Karachi" />
 
                 </LinearLayout>
 

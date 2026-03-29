@@ -104,16 +104,29 @@ class ProfileFragment : Fragment() {
             val ratingStr = if (user.rating > 0) "%.1f".format(user.rating) else "New"
             binding.tvUserStats.text = getString(R.string.label_user_stats, user.listingsCount, ratingStr)
 
+            // Phone
+            if (user.phone.isNotBlank()) {
+                binding.tvUserPhone.text = "📞 ${user.phone}"
+                binding.layoutPhone.visibility = View.VISIBLE
+            } else {
+                binding.layoutPhone.visibility = View.GONE
+            }
+
+            // Location
             if (user.location.isNotBlank()) {
-                binding.tvUserLocation.text = getString(R.string.label_location, user.location)
-                binding.tvUserLocation.visibility = View.VISIBLE
-            } else binding.tvUserLocation.visibility = View.GONE
+                binding.tvUserLocation.text = "📍 ${user.location}"
+                binding.layoutLocation.visibility = View.VISIBLE
+            } else {
+                binding.layoutLocation.visibility = View.GONE
+            }
 
-
+            // Bio
             if (user.bio.isNotBlank()) {
                 binding.tvUserBio.text = user.bio
                 binding.tvUserBio.visibility = View.VISIBLE
-            } else binding.tvUserBio.visibility = View.GONE
+            } else {
+                binding.tvUserBio.visibility = View.GONE
+            }
 
             if (user.profileImagePath.isNotBlank()) {
                 binding.ivProfileImage.load(File(user.profileImagePath)) {
