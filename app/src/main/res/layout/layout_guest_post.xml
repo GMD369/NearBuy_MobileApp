@@ -2,91 +2,139 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FF">
+    android:background="#F8F9FF"
+    android:padding="24dp">
 
     <ImageView
-        android:id="@+id/ivGuestPostIcon"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:id="@+id/ivRestrictionIllustration"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:src="@drawable/ic_nav_post"
-        android:alpha="0.12"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@id/tvGuestPostTitle"
+        android:alpha="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvRestrictionTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tvRestrictionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Action Required"
+        android:textSize="24sp"
+        android:textColor="#0D0D0D"
+        android:fontFamily="sans-serif-black"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/ivRestrictionIllustration"
+        app:layout_constraintBottom_toTopOf="@id/tvRestrictionDesc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/tvGuestPostTitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvRestrictionDesc"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign in to Post"
-        android:textSize="22sp"
-        android:textColor="#0D0D0D"
-        android:fontFamily="sans-serif-black"
-        android:letterSpacing="-0.02"
-        app:layout_constraintBottom_toTopOf="@id/tvGuestPostDesc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="10dp" />
-
-    <TextView
-        android:id="@+id/tvGuestPostDesc"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:text="To post a new listing you need to be logged in to your account."
-        android:textSize="14sp"
-        android:textColor="#888888"
+        android:text="To ensure a safe marketplace, we require sellers to complete their profile before posting items."
+        android:textSize="15sp"
+        android:textColor="#666666"
         android:fontFamily="sans-serif"
-        android:lineSpacingMultiplier="1.5"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/btnGuestPostLogin"
+        android:lineSpacingExtra="4dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tvRestrictionTitle"
+        app:layout_constraintBottom_toTopOf="@id/layoutChecklist"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="32dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layoutChecklist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_checklist_card"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvRestrictionDesc"
+        app:layout_constraintBottom_toTopOf="@id/btnAction">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Missing Requirements:"
+            android:textSize="12sp"
+            android:textColor="#AAAAAA"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.05"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvCheckPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Phone Number"
+            android:textSize="14sp"
+            android:textColor="#FF6600"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvCheckLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Location"
+            android:textSize="14sp"
+            android:textColor="#FF6600"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvCheckPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Profile Photo"
+            android:textSize="14sp"
+            android:textColor="#FF6600"
+            android:fontFamily="sans-serif-medium" />
+
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnGuestPostLogin"
-        android:layout_width="220dp"
-        android:layout_height="52dp"
-        android:text="Login / Register"
-        android:textSize="15sp"
+        android:id="@+id/btnAction"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Complete Profile"
+        android:textSize="16sp"
         android:textColor="#FFFFFF"
         android:textAllCaps="false"
         android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="32dp"
         app:backgroundTint="#FF6600"
-        app:cornerRadius="14dp"
-        app:elevation="0dp"
-        app:rippleColor="#22000000"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@id/btnGuestPostHome"
+        app:cornerRadius="16dp"
+        app:elevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutChecklist"
+        app:layout_constraintBottom_toTopOf="@id/btnSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnGuestPostHome"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_width="220dp"
-        android:layout_height="52dp"
-        android:text="Go to Home"
+        android:id="@+id/btnSecondary"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Go Back"
         android:textSize="15sp"
-        android:textColor="#FF6600"
+        android:textColor="#888888"
         android:textAllCaps="false"
         android:fontFamily="sans-serif-medium"
-        app:strokeColor="#FF6600"
-        app:strokeWidth="1.5dp"
-        app:cornerRadius="14dp"
-        app:rippleColor="#11FF6600"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/btnAction"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="80dp" />
-
-    <!-- centered vertically as a group via chain -->
-    <androidx.constraintlayout.widget.Group
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ivGuestPostIcon,tvGuestPostTitle,tvGuestPostDesc,btnGuestPostLogin,btnGuestPostHome" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

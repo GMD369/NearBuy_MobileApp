@@ -12,4 +12,9 @@ data class User(
     val rating: Float = 0f,
     val listingsCount: Int = 0,
     val joinedAt: Long = System.currentTimeMillis()
-)
+) {
+    val isProfileComplete: Boolean
+        get() = name.isNotBlank() && 
+                phone.isNotBlank() && 
+                location.isNotBlank()
+}

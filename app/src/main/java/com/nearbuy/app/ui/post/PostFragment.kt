@@ -7,14 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.R
+import com.nearbuy.app.data.model.User
 import com.nearbuy.app.databinding.FragmentPostBinding
 import com.nearbuy.app.ui.auth.AuthViewModel
+import com.nearbuy.app.ui.profile.ProfileViewModel
 import java.io.File
 
 class PostFragment : Fragment() {
@@ -22,6 +25,7 @@ class PostFragment : Fragment() {
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
     private lateinit var adapter: PostStepAdapter
 
     private val pickImages = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris: List<Uri> ->
@@ -56,47 +60,115 @@ class PostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!authViewModel.isLoggedIn()) {
-            binding.layoutGuestPost.root.visibility = View.VISIBLE
-            binding.postProgress.visibility = View.GONE
-            binding.postViewPager.visibility = View.GONE
-            binding.bottomButtons.visibility = View.GONE
-            binding.layoutGuestPost.btnGuestPostLogin.setOnClickListener {
-                findNavController().navigate(R.id.action_nav_post_to_nav_login)
-            }
-            binding.layoutGuestPost.btnGuestPostHome.setOnClickListener {
-                findNavController().navigate(R.id.nav_home)
-            }
+        profileViewModel.user.observe(viewLifecycleOwner) { user ->
+            updateUI(user)
+        }
+    }
+
+    private fun updateUI(user: User?) {
+        if (user == null) {
+            showRestrictionLayout(
+                title = "Sign in to Post",
+                desc = "To post a new listing you need to be logged in to your account.",
+                actionText = "Login / Register",
+                isGuest = true
+            )
             return
         }
 
-        adapter = PostStepAdapter(onPickImages = { pickImages.launch("image/*") })
-        binding.postViewPager.adapter = adapter
-        binding.postViewPager.isUserInputEnabled = false
+        if (!user.isProfileComplete) {
+            showRestrictionLayout(
+                title = "Complete Your Profile",
+                desc = "To maintain trust in our community, we require all sellers to provide contact details and a profile photo.",
+                actionText = "Go to Profile Settings",
+                user = user
+            )
+            return
+        }
 
-        binding.btnNext.setOnClickListener {
-            val currentItem = binding.postViewPager.currentItem
-            if (validateStep(currentItem)) {
-                if (currentItem < adapter.itemCount - 1) {
-                    binding.postViewPager.currentItem = currentItem + 1
-                } else {
-                    saveListing()
+        // Profile is complete, show the posting flow
+        setupPostFlow()
+    }
+
+    private fun setupPostFlow() {
+        binding.layoutGuestPost.root.visibility = View.GONE
+        binding.postProgress.visibility = View.VISIBLE
+        binding.postViewPager.visibility = View.VISIBLE
+        binding.bottomButtons.visibility = View.VISIBLE
+
+        if (binding.postViewPager.adapter == null) {
+            adapter = PostStepAdapter(onPickImages = { pickImages.launch("image/*") })
+            binding.postViewPager.adapter = adapter
+            binding.postViewPager.isUserInputEnabled = false
+
+            binding.btnNext.setOnClickListener {
+                val currentItem = binding.postViewPager.currentItem
+                if (validateStep(currentItem)) {
+                    if (currentItem < adapter.itemCount - 1) {
+                        binding.postViewPager.currentItem = currentItem + 1
+                    } else {
+                        saveListing()
+                    }
                 }
             }
-        }
 
-        binding.btnBack.setOnClickListener {
-            val currentItem = binding.postViewPager.currentItem
-            if (currentItem > 0) binding.postViewPager.currentItem = currentItem - 1
-        }
-
-        binding.postViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                binding.postProgress.progress = (position + 1) * 25
-                binding.btnBack.visibility = if (position > 0) View.VISIBLE else View.GONE
-                binding.btnNext.text = if (position == adapter.itemCount - 1) "Post" else "Next"
+            binding.btnBack.setOnClickListener {
+                val currentItem = binding.postViewPager.currentItem
+                if (currentItem > 0) binding.postViewPager.currentItem = currentItem - 1
             }
-        })
+
+            binding.postViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    binding.postProgress.progress = (position + 1) * 25
+                    binding.btnBack.visibility = if (position > 0) View.VISIBLE else View.GONE
+                    binding.btnNext.text = if (position == adapter.itemCount - 1) "Post" else "Next"
+                }
+            })
+        }
+    }
+
+    private fun showRestrictionLayout(
+        title: String,
+        desc: String,
+        actionText: String,
+        isGuest: Boolean = false,
+        user: User? = null
+    ) {
+        binding.layoutGuestPost.root.visibility = View.VISIBLE
+        binding.postProgress.visibility = View.GONE
+        binding.postViewPager.visibility = View.GONE
+        binding.bottomButtons.visibility = View.GONE
+
+        val layout = binding.layoutGuestPost
+        layout.tvRestrictionTitle.text = title
+        layout.tvRestrictionDesc.text = desc
+        layout.btnAction.text = actionText
+
+        if (isGuest) {
+            layout.layoutChecklist.visibility = View.GONE
+            layout.btnAction.setOnClickListener { findNavController().navigate(R.id.nav_login) }
+        } else {
+            layout.layoutChecklist.visibility = View.VISIBLE
+            
+            // Checklist logic
+            updateChecklistItem(layout.tvCheckPhone, user?.phone?.isNotBlank() == true, "Phone Number")
+            updateChecklistItem(layout.tvCheckLocation, user?.location?.isNotBlank() == true, "Location")
+            updateChecklistItem(layout.tvCheckPhoto, user?.profileImagePath?.isNotBlank() == true, "Profile Photo")
+
+            layout.btnAction.setOnClickListener { findNavController().navigate(R.id.nav_profile) }
+        }
+
+        layout.btnSecondary.setOnClickListener { findNavController().navigate(R.id.nav_home) }
+    }
+
+    private fun updateChecklistItem(textView: android.widget.TextView, isDone: Boolean, label: String) {
+        if (isDone) {
+            textView.text = "✓ $label"
+            textView.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
+        } else {
+            textView.text = "• $label (Missing)"
+            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.orange_primary))
+        }
     }
 
     private fun validateStep(step: Int): Boolean {
@@ -132,6 +204,11 @@ class PostFragment : Fragment() {
         app.listingRepository.addListing(listing)
         Toast.makeText(requireContext(), "Listing posted successfully!", Toast.LENGTH_LONG).show()
         view?.post { findNavController().navigate(R.id.action_nav_post_to_nav_home) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        profileViewModel.loadProfile()
     }
 
     override fun onDestroyView() {

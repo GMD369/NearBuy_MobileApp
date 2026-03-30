@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.R
@@ -21,7 +22,8 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
     private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
     
-    private val profileViewModel: ProfileViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    // Shared ViewModel across Activity to ensure data consistency
+    private val profileViewModel: ProfileViewModel by activityViewModels()
 
     private val provinces = listOf("Punjab", "Sindh", "Khyber Pakhtunkhwa", "Balochistan", "Islamabad Capital Territory")
     private val citiesMap = mapOf(
@@ -55,18 +57,18 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
                 if (binding.etEditName.text.isNullOrBlank()) {
                     binding.etEditName.setText(it.name)
                     binding.etEditPhone.setText(it.phone)
-                    // Location logic handled in setupLocationSpinners pre-fill
                     binding.etEditBio.setText(it.bio)
                 }
                 
                 if (it.profileImagePath.isNotBlank()) {
                     binding.ivEditProfileImage.load(File(it.profileImagePath)) {
                         crossfade(true)
-                        placeholder(R.drawable.ic_launcher_background)
-                        error(R.drawable.ic_launcher_background)
+                        placeholder(R.drawable.bg_avatar_circle)
+                        error(R.drawable.bg_avatar_circle)
+                        transformations(CircleCropTransformation())
                     }
                 } else {
-                    binding.ivEditProfileImage.load(R.drawable.ic_launcher_background)
+                    binding.ivEditProfileImage.load(R.drawable.bg_avatar_circle)
                 }
             }
         }
@@ -77,26 +79,35 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
 
         binding.btnSaveProfile.setOnClickListener {
             val name = binding.etEditName.text.toString().trim()
+            val phone = binding.etEditPhone.text.toString().trim()
+            val bio = binding.etEditBio.text.toString().trim()
+            val city = binding.acEditLocation.text.toString().trim()
+
             if (name.isBlank()) {
-                binding.tilEditName.error = "Name cannot be empty"
+                binding.tilEditName.error = "Name is required"
                 return@setOnClickListener
             }
-            binding.tilEditName.error = null
-            
-            val city = binding.acEditLocation.text.toString().trim()
+            if (phone.isBlank()) {
+                binding.tilEditPhone.error = "Phone is required"
+                return@setOnClickListener
+            }
             if (city.isBlank()) {
-                Toast.makeText(requireContext(), "Please select a city", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Location is required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (bio.isBlank()) {
+                binding.tilEditBio.error = "Bio is required"
                 return@setOnClickListener
             }
 
             profileViewModel.updateProfile(
                 name     = name,
-                phone    = binding.etEditPhone.text.toString().trim(),
+                phone    = phone,
                 location = city,
-                bio      = binding.etEditBio.text.toString().trim()
+                bio      = bio
             )
             
-            Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show()
             dismiss()
         }
     }
@@ -110,10 +121,8 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
             updateCityDropdown(selectedProvince)
         }
 
-        // Pre-fill location if user already has one
         profileViewModel.user.value?.location?.let { currentLocation ->
             if (currentLocation.isNotBlank()) {
-                // Find which province this city belongs to
                 val province = citiesMap.entries.find { it.value.contains(currentLocation) }?.key
                 if (province != null) {
                     binding.acEditProvince.setText(province, false)
@@ -128,7 +137,7 @@ class EditProfileBottomSheet : BottomSheetDialogFragment() {
         val cities = citiesMap[province] ?: emptyList()
         val cityAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, cities)
         binding.acEditLocation.setAdapter(cityAdapter)
-        binding.acEditLocation.setText("") // Clear previous selection
+        binding.acEditLocation.setText("")
         binding.tilEditLocation.isEnabled = true
     }
 

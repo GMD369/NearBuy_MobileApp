@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nearbuy.app.NearBuyApplication
 import com.nearbuy.app.R
@@ -52,6 +53,7 @@ class DetailFragment : Fragment() {
     private fun populateDetails(listing: Listing) {
         val app = requireActivity().application as NearBuyApplication
         val repo = app.listingRepository
+        val userRepo = app.userRepository
         val session = app.sessionManager
 
         val formatted = NumberFormat.getNumberInstance(Locale("en", "PK"))
@@ -64,6 +66,19 @@ class DetailFragment : Fragment() {
         binding.tvDetailDescription.text = listing.description.ifBlank { "No description provided." }
         binding.tvSellerName.text        = listing.sellerName
         binding.tvSellerRating.text      = "★ 4.5 Rating"
+
+        // Load seller profile image
+        val seller = userRepo.getUserById(listing.sellerId)
+        if (seller?.profileImagePath?.isNotEmpty() == true) {
+            binding.ivSellerProfile.load(File(seller.profileImagePath)) {
+                crossfade(true)
+                placeholder(R.drawable.bg_avatar_circle)
+                error(R.drawable.bg_avatar_circle)
+                transformations(CircleCropTransformation())
+            }
+        } else {
+            binding.ivSellerProfile.setImageResource(R.drawable.bg_avatar_circle)
+        }
 
         // Save / unsave toggle
         val userId = session.userId

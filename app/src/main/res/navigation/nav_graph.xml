@@ -68,7 +68,16 @@
         <action
             android:id="@+id/action_nav_profile_to_nav_detail"
             app:destination="@id/nav_detail" />
+        <action
+            android:id="@+id/action_nav_profile_to_nav_help"
+            app:destination="@id/nav_help" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_help"
+        android:name="com.nearbuy.app.ui.profile.HelpFragment"
+        android:label="Help &amp; FAQ"
+        tools:layout="@layout/fragment_help" />
 
     <fragment
         android:id="@+id/nav_login"

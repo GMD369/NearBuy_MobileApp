@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.nearbuy.app.R
 import com.nearbuy.app.databinding.FragmentProfileBinding
 import com.nearbuy.app.ui.adapter.ListingAdapter
@@ -23,7 +23,8 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val profileViewModel: ProfileViewModel by viewModels()
+    // Use activityViewModels to share state with PostFragment and EditProfileBottomSheet
+    private val profileViewModel: ProfileViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     private lateinit var listingAdapter: ListingAdapter
 
@@ -82,6 +83,10 @@ class ProfileFragment : Fragment() {
                     EditProfileBottomSheet().show(childFragmentManager, "edit_profile")
                     true
                 }
+                R.id.menu_help -> {
+                    findNavController().navigate(R.id.action_nav_profile_to_nav_help)
+                    true
+                }
                 R.id.menu_logout -> {
                     authViewModel.logout()
                     
@@ -131,9 +136,12 @@ class ProfileFragment : Fragment() {
             if (user.profileImagePath.isNotBlank()) {
                 binding.ivProfileImage.load(File(user.profileImagePath)) {
                     crossfade(true)
-                    placeholder(R.drawable.ic_launcher_background)
-                    error(R.drawable.ic_launcher_background)
+                    placeholder(R.drawable.bg_avatar_circle)
+                    error(R.drawable.bg_avatar_circle)
+                    transformations(CircleCropTransformation())
                 }
+            } else {
+                binding.ivProfileImage.setImageResource(R.drawable.bg_avatar_circle)
             }
         }
 
