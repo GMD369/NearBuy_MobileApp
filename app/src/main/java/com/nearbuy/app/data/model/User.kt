@@ -16,5 +16,6 @@ data class User(
     val isProfileComplete: Boolean
         get() = name.isNotBlank() && 
                 phone.isNotBlank() && 
-                location.isNotBlank()
+                location.isNotBlank() &&
+                profileImagePath.isNotBlank()
 }
