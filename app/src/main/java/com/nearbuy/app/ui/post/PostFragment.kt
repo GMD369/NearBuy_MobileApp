@@ -1,5 +1,6 @@
 package com.nearbuy.app.ui.post
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.nearbuy.app.NearBuyApplication
@@ -167,6 +169,11 @@ class PostFragment : Fragment() {
         }
 
         app.listingRepository.addListing(listing)
+
+        // Application broadcast: notify HomeFragment to refresh listings
+        LocalBroadcastManager.getInstance(requireContext())
+            .sendBroadcast(Intent("ACTION_LISTING_POSTED"))
+
         Toast.makeText(requireContext(), "Listing posted successfully!", Toast.LENGTH_LONG).show()
         view?.post { findNavController().navigate(R.id.action_nav_post_to_nav_home) }
     }

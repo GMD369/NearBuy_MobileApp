@@ -1,11 +1,19 @@
 package com.nearbuy.app.ui.home
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +29,29 @@ class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var listingAdapter: ListingAdapter
+
+    // ── System Broadcasting: listens for network connectivity changes ──
+    private val networkReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val isConnected = isNetworkAvailable()
+            if (!isConnected) {
+                binding.layoutError.visibility = View.VISIBLE
+                binding.tvErrorMessage.text = "No internet connection"
+                binding.rvListings.visibility = View.GONE
+            } else {
+                binding.layoutError.visibility = View.GONE
+                binding.rvListings.visibility = View.VISIBLE
+                homeViewModel.loadListings()
+            }
+        }
+    }
+
+    // ── Application Broadcasting: listens for new listing posted ──
+    private val listingPostedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            homeViewModel.loadListings()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -129,6 +160,37 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         homeViewModel.loadListings()
+
+        // Register system broadcast receiver for network changes
+        @Suppress("DEPRECATION")
+        requireContext().registerReceiver(
+            networkReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+
+        // Register app broadcast receiver for new listings
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(listingPostedReceiver, IntentFilter("ACTION_LISTING_POSTED"))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Unregister both receivers to prevent memory leaks
+        requireContext().unregisterReceiver(networkReceiver)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(listingPostedReceiver)
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = cm.activeNetwork ?: return false
+            val caps = cm.getNetworkCapabilities(network) ?: return false
+            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        } else {
+            @Suppress("DEPRECATION")
+            cm.activeNetworkInfo?.isConnected == true
+        }
     }
 
     override fun onDestroyView() {
