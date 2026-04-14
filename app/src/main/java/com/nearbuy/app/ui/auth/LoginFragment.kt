@@ -48,6 +48,20 @@ class LoginFragment : Fragment() {
             }
         }
 
+        binding.etEmail.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val email = binding.etEmail.text.toString().trim()
+                binding.tilEmail.error = if (email.isBlank()) "Email is required" else null
+            }
+        }
+
+        binding.etPassword.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val password = binding.etPassword.text.toString()
+                binding.tilPassword.error = if (password.isBlank()) "Password is required" else null
+            }
+        }
+
         binding.btnLogin.setOnClickListener {
             val email    = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString()

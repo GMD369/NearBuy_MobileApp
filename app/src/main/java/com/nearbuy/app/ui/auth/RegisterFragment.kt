@@ -42,6 +42,27 @@ class RegisterFragment : Fragment() {
             }
         }
 
+        binding.etName.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val name = binding.etName.text.toString().trim()
+                binding.tilName.error = if (name.isBlank()) "Name is required" else null
+            }
+        }
+
+        binding.etEmail.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val email = binding.etEmail.text.toString().trim()
+                binding.tilEmail.error = if (email.isBlank()) "Email is required" else null
+            }
+        }
+
+        binding.etPassword.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val password = binding.etPassword.text.toString()
+                binding.tilPassword.error = if (password.length < 6) "Password must be at least 6 characters" else null
+            }
+        }
+
         binding.btnRegister.setOnClickListener {
             val name     = binding.etName.text.toString().trim()
             val email    = binding.etEmail.text.toString().trim()
